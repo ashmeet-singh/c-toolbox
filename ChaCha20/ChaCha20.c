@@ -1,14 +1,11 @@
-#include <stdio.h>
 #include <stdint.h>
-#include <string.h>
-#include <stddef.h>
 
-void quarter_round(uint32_t *aa, uint32_t *bb, uint32_t *cc, uint32_t *dd)
+void quarter_round(uint32_t *v0, uint32_t *v1, uint32_t *v2, uint32_t *v3)
 {
-    register uint32_t a = *aa;
-    register uint32_t b = *bb;
-    register uint32_t c = *cc;
-    register uint32_t d = *dd;
+    register uint32_t a = *v0;
+    register uint32_t b = *v1;
+    register uint32_t c = *v2;
+    register uint32_t d = *v3;
     a += b;
     d ^= a;
     d = (d << 16) | (d >> 16);
@@ -21,13 +18,13 @@ void quarter_round(uint32_t *aa, uint32_t *bb, uint32_t *cc, uint32_t *dd)
     c += d;
     b ^= c;
     b = (b << 7) | (b >> 25);
-    *aa = a;
-    *bb = b;
-    *cc = c;
-    *dd = d;
+    *v0 = a;
+    *v1 = b;
+    *v2 = c;
+    *v3 = d;
 }
 
-void next_chacha20_block(uint32_t input_block[16])
+void chacha20_block(uint32_t input_block[16])
 {
     int i;
     for (i = 0; i < 20; i = i + 2)
