@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <stdio.h>
 
 #define ROTR(x, n) ((x >> n) | (x << (32 - n)))
 #define ROTL(x, n) ((x << n) | (x >> (32 - n)))
@@ -29,7 +28,9 @@ void process_sha256_block(uint32_t input_block[16], uint32_t previous_hash[8], u
     register uint32_t T2;
 
     uint32_t B[64];
-    int i;
+
+    uint8_t i;
+
     for (i = 0; i < 16; i++)
     {
         B[i] = input_block[i];
