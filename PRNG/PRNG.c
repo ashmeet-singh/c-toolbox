@@ -8,8 +8,16 @@ static uint32_t prng_seed[16];
 
 uint32_t prng_int32(uint32_t min, uint32_t max)
 {
+    time_t ts = time(NULL);
 
-    prng_seed[0] = prng_seed[0] + ((uint32_t)time(NULL));
+    if (ts == (time_t)(-1))
+    {
+        prng_seed[0] = 0xffffffff;
+    }
+    else
+    {
+        prng_seed[0] = (uint32_t)ts;
+    }
 
     chacha20_block(prng_seed);
 
