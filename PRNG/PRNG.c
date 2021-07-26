@@ -25,5 +25,5 @@ uint32_t prng_uint32(uint32_t min, uint32_t max)
 {
     refresh_prng_seed();
 
-    return (((((uint64_t)prng_seed[7]) * (max - min + 1)) >> 32) + min);
+    return ((uint32_t)(((((uint64_t)prng_seed[7]) * (max - min + 1)) >> 32) + min));
 }
