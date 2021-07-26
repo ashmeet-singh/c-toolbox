@@ -6,7 +6,7 @@ void chacha20_block(uint32_t input_block[16]);
 
 static uint32_t prng_seed[16];
 
-uint32_t prng_int32(uint32_t min, uint32_t max)
+void refresh_prng_seed()
 {
     time_t ts = time(NULL);
 
@@ -20,6 +20,11 @@ uint32_t prng_int32(uint32_t min, uint32_t max)
     }
 
     chacha20_block(prng_seed);
+}
+
+uint32_t prng_uint32(uint32_t min, uint32_t max)
+{
+    refresh_prng_seed();
 
     return ((uint32_t)(((((uint64_t)prng_seed[0]) * (max - min + 1)) >> 32) + min));
 }
