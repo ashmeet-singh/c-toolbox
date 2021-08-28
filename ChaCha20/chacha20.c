@@ -26,7 +26,7 @@ void chacha20_quarter_round(uint32_t *v0, uint32_t *v1, uint32_t *v2, uint32_t *
 
 void chacha20_process_block(uint32_t input_block[16], uint32_t output_block[16])
 {
-    int i;
+    uint_fast8_t i;
     for (i = 0; i < 16; i++)
     {
         output_block[i] = input_block[i];
@@ -55,7 +55,7 @@ uint8_t chacha20_test()
     uint32_t output_block[16];
     chacha20_process_block(test_input_block, output_block);
 
-    int i;
+    uint_fast8_t i;
     for (i = 0; i < 16; i++)
     {
         if (output_block[i] != test_output_block[i])

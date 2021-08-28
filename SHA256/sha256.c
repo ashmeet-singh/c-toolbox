@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <stdio.h>
+
 #define ROTR(x, n) (((x) >> (n)) | ((x) << (32 - (n))))
 #define ROTL(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 
