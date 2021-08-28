@@ -16,9 +16,9 @@ uint32_t SHA256_SR[8] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e5
 
 struct sha256_state
 {
-    uint8_t unused_bytes[64];
-    uint8_t unused_bytes_count;
-    uint64_t used_bytes_count;
+    uint8_t input_block_bytes[64];
+    uint_fast8_t input_block_bytes_count;
+    uint64_t digested_bytes_count;
     uint32_t hash[8];
 };
 
@@ -81,31 +81,32 @@ void sha256_process_block(uint32_t input_block[16], uint32_t previous_hash[8], u
     next_hash[7] = h + previous_hash[7];
 }
 
-void sha256_change_input_block_endianness(uint32_t *i_b_p, uint64_t c)
+void sha256_change_input_block_endianness(uint32_t input_block[16])
 {
-    uint64_t i;
+    uint_fast8_t i;
     register uint32_t n;
-    for (i = 0; i < c; i++)
+    for (i = 0; i < 16; i++)
     {
-        n = i_b_p[i];
-        i_b_p[i] = ((n << 24) | (((n >> 8) & 255) << 16) | (((n >> 16) & 255) << 8) | (n >> 24));
+        n = input_block[i];
+        input_block[i] = ((n << 24) | (((n >> 8) & 255) << 16) | (((n >> 16) & 255) << 8) | (n >> 24));
     }
 }
 
 void sha256_init(struct sha256_state *s)
 {
-    s->unused_bytes_count = 0;
-    s->used_bytes_count = 0;
+    s->input_block_bytes_count = 0;
+    s->digested_bytes_count = 0;
 }
 
 void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c)
 {
     uint32_t test_i;
     uint8_t *test_p;
-    uint8_t l_e;
+    uint_fast8_t l_e;
 
     test_i = 1;
     test_p = (uint8_t *)&test_i;
+
     if (test_p[0] == 1)
     {
         l_e = 1;
@@ -115,64 +116,29 @@ void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c)
         l_e = 0;
     }
 
-    uint64_t nbi;
-    nbi = 0;
+    uint64_t i;
 
-    while (c > 0 && s->unused_bytes_count < 64)
+    for (i = 0; i < c; i++)
     {
-        s->unused_bytes[s->unused_bytes_count] = *(b + nbi);
-        (s->unused_bytes_count)++;
-        nbi++;
-        c--;
-    }
-
-    if (s->unused_bytes_count == 64)
-    {
-        if (l_e == 1)
+        s->input_block_bytes[s->input_block_bytes_count] = *(b + i);
+        (s->input_block_bytes_count)++;
+        if (s->input_block_bytes_count == 64)
         {
-            sha256_change_input_block_endianness((uint32_t *)(s->unused_bytes), 16);
+            if (l_e == 1)
+            {
+                sha256_change_input_block_endianness((uint32_t *)(s->input_block_bytes));
+            }
+            if (s->digested_bytes_count == 0)
+            {
+                sha256_process_block((uint32_t *)(s->input_block_bytes), SHA256_SR, s->hash);
+            }
+            else
+            {
+                sha256_process_block((uint32_t *)(s->input_block_bytes), s->hash, s->hash);
+            }
+            s->digested_bytes_count = s->digested_bytes_count + 64;
+            s->input_block_bytes_count = 0;
         }
-
-        if (s->used_bytes_count == 0)
-        {
-            sha256_process_block((uint32_t *)(s->unused_bytes), SHA256_SR, s->hash);
-        }
-        else
-        {
-            sha256_process_block((uint32_t *)(s->unused_bytes), s->hash, s->hash);
-        }
-        s->used_bytes_count = s->used_bytes_count + 64;
-        s->unused_bytes_count = 0;
-    }
-
-    if (c > 63)
-    {
-        uint32_t *ib;
-        uint64_t nibi;
-        nibi = 0;
-        ib = (uint32_t *)(b + nbi);
-
-        if (l_e == 1)
-        {
-            sha256_change_input_block_endianness(ib, (c - (c % 64)) / 4);
-        }
-        
-        while (c > 63)
-        {
-            sha256_process_block(ib + nibi, s->hash, s->hash);
-            s->used_bytes_count = s->used_bytes_count + 64;
-            nibi = nibi + 16;
-            nbi = nbi + 64;
-            c = c - 64;
-        }
-    }
-
-    while (c > 0)
-    {
-        s->unused_bytes[s->unused_bytes_count] = *(b + nbi);
-        (s->unused_bytes_count)++;
-        nbi++;
-        c--;
     }
 }
 
