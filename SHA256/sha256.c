@@ -22,7 +22,7 @@ struct sha256_state
     uint32_t hash[8];
 };
 
-void process_sha256_block(uint32_t input_block[16], uint32_t previous_hash[8], uint32_t next_hash[8])
+void sha256_process_block(uint32_t input_block[16], uint32_t previous_hash[8], uint32_t next_hash[8])
 {
     register uint32_t a;
     register uint32_t b;
@@ -81,7 +81,7 @@ void process_sha256_block(uint32_t input_block[16], uint32_t previous_hash[8], u
     next_hash[7] = h + previous_hash[7];
 }
 
-void change_input_block_endianness(uint32_t *i_b_p, uint64_t c)
+void sha256_change_input_block_endianness(uint32_t *i_b_p, uint64_t c)
 {
     uint64_t i;
     register uint32_t n;
@@ -130,16 +130,16 @@ void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c)
     {
         if (l_e == 1)
         {
-            change_input_block_endianness((uint32_t *)(s->unused_bytes), 16);
+            sha256_change_input_block_endianness((uint32_t *)(s->unused_bytes), 16);
         }
 
         if (s->used_bytes_count == 0)
         {
-            process_sha256_block((uint32_t *)(s->unused_bytes), SHA256_SR, s->hash);
+            sha256_process_block((uint32_t *)(s->unused_bytes), SHA256_SR, s->hash);
         }
         else
         {
-            process_sha256_block((uint32_t *)(s->unused_bytes), s->hash, s->hash);
+            sha256_process_block((uint32_t *)(s->unused_bytes), s->hash, s->hash);
         }
         s->used_bytes_count = s->used_bytes_count + 64;
         s->unused_bytes_count = 0;
@@ -147,18 +147,20 @@ void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c)
 
     if (c > 63)
     {
-        uint32_t *ibp;
+        uint32_t *ib;
         uint64_t nibi;
         nibi = 0;
-        ibp = (uint32_t *)(b + nbi);
+        ib = (uint32_t *)(b + nbi);
 
         if (l_e == 1)
         {
-            change_input_block_endianness((uint32_t *)(ibp), (c - (c % 64)) / 4);
+            sha256_change_input_block_endianness(ib, (c - (c % 64)) / 4);
         }
+        
         while (c > 63)
         {
-            process_sha256_block((uint32_t *)(ibp + nibi), s->hash, s->hash);
+            sha256_process_block(ib + nibi, s->hash, s->hash);
+            s->used_bytes_count = s->used_bytes_count + 64;
             nibi = nibi + 16;
             nbi = nbi + 64;
             c = c - 64;
