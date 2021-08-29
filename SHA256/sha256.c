@@ -100,8 +100,8 @@ void sha256_digest_state_input_block_bytes(struct sha256_state *s)
 
     if (test_p[0] == 1)
     {
-        uint_fast8_t i;
         uint32_t n;
+        uint_fast8_t i;
 
         for (i = 0; i < 16; i++)
         {
@@ -140,7 +140,7 @@ void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c)
 void sha256_digest(struct sha256_state *s, uint8_t output_hash[32])
 {
     uint64_t l;
-    l = (s->digested_bytes_count + s->input_block_bytes_count) * 8;
+    l = (s->digested_bytes_count + s->input_block_bytes_count) << 3;
 
     s->input_block_bytes[s->input_block_bytes_count] = 128;
     (s->input_block_bytes_count)++;
