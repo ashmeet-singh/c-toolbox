@@ -1,23 +1,30 @@
+#include <stdlib.h>
 #include <stdio.h>
-#define TEST_SIZE 1000000000
+#include <stdint.h>
 
-long int test_buffer[TEST_SIZE];
+int main(int argc, char *argv[]) {
+    long long int bytes_count;
+    uint64_t i;
+    uint8_t *test_buffer;
 
-int main()
-{
-    long int i;
+    if (argc != 2) {
+        printf("Invalid arguments\n");
+        return 0;
+    }
+    
+    bytes_count = atoll(argv[1]);
 
-    i = 0;
+    test_buffer = (uint8_t *)malloc((size_t)bytes_count);
 
-    for (i = 0; i < TEST_SIZE; i++)
-    {
-        test_buffer[i] = i + 1;
+    if (test_buffer == NULL) {
+        printf("Error while allocating memory\n");
+    }
+    for (i = 0; i < bytes_count; i++) {
+        test_buffer[i] = (uint8_t)(i + 1);
     }
 
-    for (i = 0; i < TEST_SIZE; i++)
-    {
-        if (test_buffer[i] != (i + 1))
-        {
+    for (i = 0; i < bytes_count; i++) {
+        if (test_buffer[i] != (uint8_t)(i + 1)) {
             printf("FAILED\n");
             return 0;
         }
