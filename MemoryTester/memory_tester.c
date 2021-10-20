@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
         printf("Invalid arguments\n");
         return 0;
     }
-    
+
     bytes_count = atoll(argv[1]);
 
     test_buffer = (uint8_t *)malloc((size_t)bytes_count);
@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
     if (test_buffer == NULL) {
         printf("Error while allocating memory\n");
     }
+
     for (i = 0; i < bytes_count; i++) {
         test_buffer[i] = (uint8_t)(i + 1);
     }

@@ -15,8 +15,7 @@ static uint32_t SHA256_CR[64] = {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
 
 static uint32_t SHA256_SR[8] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
 
-static void sha256_process_block(uint32_t input_block[16], uint32_t previous_hash[8], uint32_t next_hash[8])
-{
+static void sha256_process_block(uint32_t input_block[16], uint32_t previous_hash[8], uint32_t next_hash[8]) {
     register uint32_t a;
     register uint32_t b;
     register uint32_t c;
@@ -72,14 +71,12 @@ static void sha256_process_block(uint32_t input_block[16], uint32_t previous_has
     next_hash[7] = h + previous_hash[7];
 }
 
-void sha256_init(struct sha256_state *s)
-{
+void sha256_init(struct sha256_state *s) {
     s->input_block_bytes_count = 0;
     s->digested_bytes_count = 0;
 }
 
-static void sha256_digest_state_input_block_bytes(struct sha256_state *s)
-{
+static void sha256_digest_state_input_block_bytes(struct sha256_state *s) {
     uint32_t *input_block;
     input_block = (uint32_t *)(s->input_block_bytes);
 
@@ -108,9 +105,7 @@ static void sha256_digest_state_input_block_bytes(struct sha256_state *s)
     s->input_block_bytes_count = 0;
 }
 
-void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c)
-{
-
+void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c) {
     uint64_t i;
     for (i = 0; i < c; i++) {
         s->input_block_bytes[s->input_block_bytes_count] = b[i];
@@ -121,8 +116,7 @@ void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c)
     }
 }
 
-void sha256_digest(struct sha256_state *s, uint8_t output_hash[32])
-{
+void sha256_digest(struct sha256_state *s, uint8_t output_hash[32]) {
     uint64_t l;
     l = (s->digested_bytes_count + s->input_block_bytes_count) << 3;
 
