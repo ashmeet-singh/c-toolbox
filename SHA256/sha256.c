@@ -36,8 +36,7 @@ static void sha256_process_block(uint32_t input_block[16], uint32_t previous_has
     {
         B[i] = input_block[i];
     }
-    for (i = 16; i < 64; i++)
-    {
+    for (i = 16; i < 64; i++) {
         B[i] = SSIG1(B[i - 2]) + B[i - 7] + SSIG0(B[i - 15]) + B[i - 16];
     }
 
@@ -50,8 +49,7 @@ static void sha256_process_block(uint32_t input_block[16], uint32_t previous_has
     g = previous_hash[6];
     h = previous_hash[7];
 
-    for (i = 0; i < 64; i++)
-    {
+    for (i = 0; i < 64; i++) {
         T1 = h + BSIG1(e) + CH(e, f, g) + SHA256_CR[i] + B[i];
         T2 = BSIG0(a) + MAJ(a, b, c);
         h = g;
@@ -91,24 +89,19 @@ static void sha256_digest_state_input_block_bytes(struct sha256_state *s)
     test_i = 1;
     test_p = (uint8_t *)&test_i;
 
-    if (test_p[0] == 1)
-    {
+    if (test_p[0] == 1) {
         uint32_t n;
         uint_fast8_t i;
 
-        for (i = 0; i < 16; i++)
-        {
+        for (i = 0; i < 16; i++) {
             n = input_block[i];
             input_block[i] = ((n << 24) | (((n >> 8) & 255) << 16) | (((n >> 16) & 255) << 8) | (n >> 24));
         }
     }
 
-    if (s->digested_bytes_count == 0)
-    {
+    if (s->digested_bytes_count == 0) {
         sha256_process_block(input_block, SHA256_SR, s->hash);
-    }
-    else
-    {
+    } else {
         sha256_process_block(input_block, s->hash, s->hash);
     }
     s->digested_bytes_count = s->digested_bytes_count + 64;
@@ -119,12 +112,10 @@ void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c)
 {
 
     uint64_t i;
-    for (i = 0; i < c; i++)
-    {
+    for (i = 0; i < c; i++) {
         s->input_block_bytes[s->input_block_bytes_count] = b[i];
         (s->input_block_bytes_count)++;
-        if (s->input_block_bytes_count == 64)
-        {
+        if (s->input_block_bytes_count == 64) {
             sha256_digest_state_input_block_bytes(s);
         }
     }
@@ -138,19 +129,15 @@ void sha256_digest(struct sha256_state *s, uint8_t output_hash[32])
     s->input_block_bytes[s->input_block_bytes_count] = 128;
     (s->input_block_bytes_count)++;
 
-    if (s->input_block_bytes_count > 56)
-    {
-        while (s->input_block_bytes_count < 64)
-        {
+    if (s->input_block_bytes_count > 56) {
+        while (s->input_block_bytes_count < 64) {
             s->input_block_bytes[s->input_block_bytes_count] = 0;
             (s->input_block_bytes_count)++;
         }
-
         sha256_digest_state_input_block_bytes(s);
     }
 
-    while (s->input_block_bytes_count < 56)
-    {
+    while (s->input_block_bytes_count < 56) {
         s->input_block_bytes[s->input_block_bytes_count] = 0;
         (s->input_block_bytes_count)++;
     }
@@ -168,8 +155,7 @@ void sha256_digest(struct sha256_state *s, uint8_t output_hash[32])
 
     uint_fast8_t i;
     uint32_t h;
-    for (i = 0; i < 8; i++)
-    {
+    for (i = 0; i < 8; i++) {
         h = (s->hash)[i];
         output_hash[(i * 4)] = (uint8_t)(h >> 24);
         output_hash[(i * 4) + 1] = (uint8_t)((h << 8) >> 24);

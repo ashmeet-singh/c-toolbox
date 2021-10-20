@@ -14,4 +14,3 @@ void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c);
 void sha256_digest(struct sha256_state *s, uint8_t output_hash[32]);
 
 #endif /* _Z_SHA256_H_INCLUDED_ */
-
