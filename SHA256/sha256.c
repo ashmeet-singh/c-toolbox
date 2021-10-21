@@ -1,4 +1,5 @@
 #include <stdint.h>
+
 #include "sha256.h"
 
 #define ROTR(x, n) (((x) >> (n)) | ((x) << (32 - (n))))
