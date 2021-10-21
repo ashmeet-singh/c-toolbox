@@ -18,16 +18,16 @@ static uint32_t SHA256_SR[8] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 
 
 static void sha256_process_block(uint32_t input_block[16], uint32_t previous_hash[8], uint32_t next_hash[8])
 {
-    register uint32_t a;
-    register uint32_t b;
-    register uint32_t c;
-    register uint32_t d;
-    register uint32_t e;
-    register uint32_t f;
-    register uint32_t g;
-    register uint32_t h;
-    register uint32_t T1;
-    register uint32_t T2;
+    uint32_t a;
+    uint32_t b;
+    uint32_t c;
+    uint32_t d;
+    uint32_t e;
+    uint32_t f;
+    uint32_t g;
+    uint32_t h;
+    uint32_t T1;
+    uint32_t T2;
 
     uint32_t B[64];
 

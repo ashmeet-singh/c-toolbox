@@ -2,10 +2,10 @@
 
 void chacha20_quarter_round(uint32_t *v0, uint32_t *v1, uint32_t *v2, uint32_t *v3)
 {
-    register uint32_t a = *v0;
-    register uint32_t b = *v1;
-    register uint32_t c = *v2;
-    register uint32_t d = *v3;
+    uint32_t a = *v0;
+    uint32_t b = *v1;
+    uint32_t c = *v2;
+    uint32_t d = *v3;
     a += b;
     d ^= a;
     d = (d << 16) | (d >> 16);
