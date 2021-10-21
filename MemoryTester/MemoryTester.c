@@ -7,7 +7,8 @@ int main(int argc, char *argv[]) {
     uint64_t i;
     uint8_t *test_buffer;
 
-    if (argc != 2) {
+    if (argc != 2)
+    {
         printf("Invalid arguments\n");
         return 0;
     }
@@ -16,16 +17,21 @@ int main(int argc, char *argv[]) {
 
     test_buffer = (uint8_t *)malloc((size_t)bytes_count);
 
-    if (test_buffer == NULL) {
+    if (test_buffer == NULL)
+    {
         printf("Error while allocating memory\n");
+        return 0;
     }
 
-    for (i = 0; i < bytes_count; i++) {
+    for (i = 0; i < bytes_count; i++)
+    {
         test_buffer[i] = (uint8_t)(i + 1);
     }
 
-    for (i = 0; i < bytes_count; i++) {
-        if (test_buffer[i] != (uint8_t)(i + 1)) {
+    for (i = 0; i < bytes_count; i++)
+    {
+        if (test_buffer[i] != (uint8_t)(i + 1))
+        {
             printf("FAILED\n");
             return 0;
         }
