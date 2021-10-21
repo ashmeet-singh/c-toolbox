@@ -1,5 +1,5 @@
-#ifndef _Z_SHA256_H_INCLUDED_
-#define _Z_SHA256_H_INCLUDED_
+#ifndef _SHA256_H_INCLUDED_
+#define _SHA256_H_INCLUDED_
 
 struct sha256_state
 {
@@ -13,4 +13,4 @@ void sha256_init(struct sha256_state *s);
 void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c);
 void sha256_digest(struct sha256_state *s, uint8_t output_hash[32]);
 
-#endif /* _Z_SHA256_H_INCLUDED_ */
+#endif /* _SHA256_H_INCLUDED_ */
