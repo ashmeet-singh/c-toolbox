@@ -15,7 +15,8 @@ static uint32_t SHA256_CR[64] = {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
 
 static uint32_t SHA256_SR[8] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
 
-static void sha256_process_block(uint32_t input_block[16], uint32_t previous_hash[8], uint32_t next_hash[8]) {
+static void sha256_process_block(uint32_t input_block[16], uint32_t previous_hash[8], uint32_t next_hash[8])
+{
     register uint32_t a;
     register uint32_t b;
     register uint32_t c;
@@ -35,7 +36,8 @@ static void sha256_process_block(uint32_t input_block[16], uint32_t previous_has
     {
         B[i] = input_block[i];
     }
-    for (i = 16; i < 64; i++) {
+    for (i = 16; i < 64; i++)
+    {
         B[i] = SSIG1(B[i - 2]) + B[i - 7] + SSIG0(B[i - 15]) + B[i - 16];
     }
 
@@ -48,7 +50,8 @@ static void sha256_process_block(uint32_t input_block[16], uint32_t previous_has
     g = previous_hash[6];
     h = previous_hash[7];
 
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < 64; i++)
+    {
         T1 = h + BSIG1(e) + CH(e, f, g) + SHA256_CR[i] + B[i];
         T2 = BSIG0(a) + MAJ(a, b, c);
         h = g;
@@ -71,12 +74,14 @@ static void sha256_process_block(uint32_t input_block[16], uint32_t previous_has
     next_hash[7] = h + previous_hash[7];
 }
 
-void sha256_init(struct sha256_state *s) {
+void sha256_init(struct sha256_state *s)
+{
     s->input_block_bytes_count = 0;
     s->digested_bytes_count = 0;
 }
 
-static void sha256_digest_state_input_block_bytes(struct sha256_state *s) {
+static void sha256_digest_state_input_block_bytes(struct sha256_state *s)
+{
     uint32_t *input_block;
     input_block = (uint32_t *)(s->input_block_bytes);
 
@@ -86,52 +91,64 @@ static void sha256_digest_state_input_block_bytes(struct sha256_state *s) {
     test_i = 1;
     test_p = (uint8_t *)&test_i;
 
-    if (test_p[0] == 1) {
+    if (test_p[0] == 1)
+    {
         uint32_t n;
         uint_fast8_t i;
 
-        for (i = 0; i < 16; i++) {
+        for (i = 0; i < 16; i++)
+        {
             n = input_block[i];
             input_block[i] = ((n << 24) | (((n >> 8) & 255) << 16) | (((n >> 16) & 255) << 8) | (n >> 24));
         }
     }
 
-    if (s->digested_bytes_count == 0) {
+    if (s->digested_bytes_count == 0)
+    {
         sha256_process_block(input_block, SHA256_SR, s->hash);
-    } else {
+    }
+    else
+    {
         sha256_process_block(input_block, s->hash, s->hash);
     }
     s->digested_bytes_count = s->digested_bytes_count + 64;
     s->input_block_bytes_count = 0;
 }
 
-void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c) {
+void sha256_update(struct sha256_state *s, uint8_t *b, uint64_t c)
+{
     uint64_t i;
-    for (i = 0; i < c; i++) {
+    for (i = 0; i < c; i++)
+    {
         s->input_block_bytes[s->input_block_bytes_count] = b[i];
         (s->input_block_bytes_count)++;
-        if (s->input_block_bytes_count == 64) {
+        if (s->input_block_bytes_count == 64)
+        {
             sha256_digest_state_input_block_bytes(s);
         }
     }
 }
 
-void sha256_digest(struct sha256_state *s, uint8_t output_hash[32]) {
+void sha256_digest(struct sha256_state *s, uint8_t output_hash[32])
+{
     uint64_t l;
     l = (s->digested_bytes_count + s->input_block_bytes_count) << 3;
 
     s->input_block_bytes[s->input_block_bytes_count] = 128;
     (s->input_block_bytes_count)++;
 
-    if (s->input_block_bytes_count > 56) {
-        while (s->input_block_bytes_count < 64) {
+    if (s->input_block_bytes_count > 56)
+    {
+        while (s->input_block_bytes_count < 64)
+        {
             s->input_block_bytes[s->input_block_bytes_count] = 0;
             (s->input_block_bytes_count)++;
         }
         sha256_digest_state_input_block_bytes(s);
     }
 
-    while (s->input_block_bytes_count < 56) {
+    while (s->input_block_bytes_count < 56)
+    {
         s->input_block_bytes[s->input_block_bytes_count] = 0;
         (s->input_block_bytes_count)++;
     }
@@ -149,7 +166,8 @@ void sha256_digest(struct sha256_state *s, uint8_t output_hash[32]) {
 
     uint_fast8_t i;
     uint32_t h;
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i++)
+    {
         h = (s->hash)[i];
         output_hash[(i * 4)] = (uint8_t)(h >> 24);
         output_hash[(i * 4) + 1] = (uint8_t)((h << 8) >> 24);
