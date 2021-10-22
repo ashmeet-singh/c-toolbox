@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct z_http_context_request_headers
+struct z_http_context_headers
 {
 };
 
@@ -13,7 +13,7 @@ struct z_http_context_request
     uint_fast8_t method;
     uint8_t uri[1000];
     uint8_t version[50];
-    struct http_request_box_headers headers;
+    struct z_http_context_headers headers;
 };
 
 struct z_http_context
