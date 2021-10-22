@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define Z_HTTP_REQUEST_METHOD_GET 1
+#define Z_HTTP_REQUEST_METHOD_POST 1
+
 struct z_http_context_headers
 {
 };
