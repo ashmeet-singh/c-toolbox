@@ -17,6 +17,7 @@ struct z_http_context_request
     uint8_t uri[1000];
     uint8_t version[50];
     struct z_http_context_headers headers;
+    uint64_t parsed_bytes_count;
 };
 
 struct z_http_context
