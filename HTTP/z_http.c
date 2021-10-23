@@ -20,7 +20,7 @@ uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_
 
     uint64_t u_i;
 
-    uint_fast8_t f1;
+    uint_fast8_t f;
 
     uint8_t c;
 
@@ -39,15 +39,12 @@ uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_
             req->method = Z_HTTP_REQUEST_METHOD_POST;
             s_i_1 = 5;
         }
-        else
-        {
-            return 0; 
-        }
+        else { return 0; }
 
         if (s_i_1 == s_i) { return 0; }
 
         u_i = 0;
-        f1 = 0;
+        f = 0;
         while (s_i_1 < s_i)
         {
             c = s[s_i_1];
@@ -60,40 +57,30 @@ uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_
             else if (c == 32)
             {
                 (req->uri)[u_i] = '\0';
-                f1 = 1;
+                f = 1;
                 break;
             }
-            else
-            {
-                return 0;
-            }
+            else { return 0; }
         }
-        if (f1 == 0) { return 0; }
+        if (f == 0) { return 0; }
+
+        if (s_i_1 == s_i) { return 0; }
 
         u_i = 0;
         while (s_i_1 < s_i)
         {
             c = s[s_i_1];
             s_i_1++;
-            if (s_i_1 == s_i)
-            {
-                if (u_i == 0) { return 0; }
-                (req->version)[u_i] = '\0';
-                break;
-            }
-            else if (z_http_char_test1(c) && (u_i != (sizeof(req->version) - 1)))
+            if (z_http_char_test1(c) && (u_i != (sizeof(req->version) - 1)))
             {
                 (req->version)[u_i] = c;
                 u_i++;
             }
-            else
-            {
-                return 0;
-            }
+            else { return 0; }
+            if (s_i_1 == s_i) { (req->version)[u_i] = '\0'; }
         }
         req->is_request_line_finished = 1;
+        req->parsed_bytes_count = req->parsed_bytes_count + s_i + 2;
     }
-    
-
-
+    return 1;
 }

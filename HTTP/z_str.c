@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 int64_t z_str_find_CRLF(void *buf, uint64_t len)
 {
     if (len == 0) { return -1; }
