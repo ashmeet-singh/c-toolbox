@@ -14,8 +14,9 @@ struct z_http_context_request
 {
     uint_fast8_t is_request_line_finished;
     uint_fast8_t method;
-    uint8_t uri[1000];
+    uint8_t uri[2000];
     uint8_t version[50];
+    uint_fast8_t is_request_headers_finished;
     struct z_http_context_headers headers;
     uint64_t parsed_bytes_count;
 };
@@ -24,5 +25,7 @@ struct z_http_context
 {
     struct z_http_context_request request;
 };
+
+uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_t len);
 
 #endif /* _Z_HTTP_H_INCLUDED_ */
