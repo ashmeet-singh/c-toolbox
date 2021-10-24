@@ -5,6 +5,10 @@
 
 #define z_http_char_test1(c) ((c > 96 && c < 123) || (c > 45 && c < 58) || (c > 64 && c < 91) || c == 95)
 
+static uint8_t known_headers[15] = { 'C', 'o', 'n', 't', 'e', 'n', 't', '-', 'L', 'e', 'n', 'g', 't', 'h', '\0' };
+static uint_fast32_t known_headers_index[1] = { 0 };
+static uint_fast32_t known_headers_length[1] = { 14 };
+
 uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_t len)
 {
     if (len == 0) { return 1; }
@@ -19,6 +23,7 @@ uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_
     int64_t s_i_1;
 
     uint64_t u_i;
+    uint64_t u_i_1;
 
     uint_fast8_t f;
 
@@ -82,5 +87,21 @@ uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_
         req->is_request_line_finished = 1;
         req->parsed_bytes_count = req->parsed_bytes_count + s_i + 2;
     }
+
+    for (u_i = 0; u_i < (sizeof(known_headers_index) / sizeof(known_headers_index[0])); u_i++)
+    {
+        s = s + req->parsed_bytes_count;
+        len = len - req->parsed_bytes_count;
+
+        s_i = z_str_find_CRLF((void *)s, len);
+        if (s_i == -1) { return 1; }
+        if (s_i == 0)
+        {
+            req->are_request_headers_finished = 1;
+            req->parsed_bytes_count = req->parsed_bytes_count + 2;
+            break;
+        }
+    }
+
     return 1;
 }

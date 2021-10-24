@@ -16,7 +16,7 @@ struct z_http_context_request
     uint_fast8_t method;
     uint8_t uri[2000];
     uint8_t version[50];
-    uint_fast8_t is_request_headers_finished;
+    uint_fast8_t are_request_headers_finished;
     struct z_http_context_headers headers;
     uint64_t parsed_bytes_count;
 };
