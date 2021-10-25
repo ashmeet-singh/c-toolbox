@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <string.h>
 
 #include "z_http.h"
 #include "z_str.h"
@@ -88,20 +89,42 @@ uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_
         req->parsed_bytes_count = req->parsed_bytes_count + s_i + 2;
     }
 
-    for (u_i = 0; u_i < (sizeof(known_headers_index) / sizeof(known_headers_index[0])); u_i++)
+    if(req->are_request_headers_finished == 0)
     {
         s = s + req->parsed_bytes_count;
         len = len - req->parsed_bytes_count;
-
-        s_i = z_str_find_CRLF((void *)s, len);
-        if (s_i == -1) { return 1; }
-        if (s_i == 0)
+        for (u_i = 0; u_i < (sizeof(known_headers_index) / sizeof(known_headers_index[0])); u_i++)
         {
-            req->are_request_headers_finished = 1;
-            req->parsed_bytes_count = req->parsed_bytes_count + 2;
-            break;
+            s_i = z_str_find_CRLF((void *)s, len);
+            if (s_i == -1) { return 1; }
+            if (s_i == 0)
+            {
+                req->are_request_headers_finished = 1;
+                req->parsed_bytes_count = req->parsed_bytes_count + 2;
+                break;
+            }
+            u_i_1 = known_headers_length[u_i];
+            if ((s_i > u_i_1) && (memcmp((void *)s, (void *)(known_headers + known_headers_index[u_i]), u_i_1) == 0))
+            {
+                s_i_1 = u_i_1;
+                while (s_i_1 < s_i)
+                {
+                    if (s[s_i_1] == 58) { break; }
+                    s_i_1++;
+                    if (s_i_1 == s_i) { return 0; }
+                }
+                if (u_i == 0)
+                {
+                    if (sizeof((req->headers).content_type) < s_i) { return 0; }
+                    memcpy((void *)((req->headers).content_type), (void *)(s + s_i_1 + 1), s_i - s_i_1 - 1);
+                    (req->headers).content_type[s_i - s_i_1 - 1] = '\0';
+                }
+
+                req->parsed_bytes_count = req->parsed_bytes_count + s_i + 2;
+                s = s + s_i + 2;
+                len = len - s_i - 2;
+            }
         }
     }
-
     return 1;
 }

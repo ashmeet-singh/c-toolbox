@@ -8,6 +8,7 @@
 
 struct z_http_context_headers
 {
+    uint8_t content_type[200];
 };
 
 struct z_http_context_request
@@ -24,6 +25,7 @@ struct z_http_context_request
 struct z_http_context
 {
     struct z_http_context_request request;
+    uint8_t tempbuf[10000];
 };
 
 uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_t len);
