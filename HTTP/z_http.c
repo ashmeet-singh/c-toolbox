@@ -120,6 +120,7 @@ uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_
                     if (sizeof((req->headers).content_type) < s_i) { return 0; }
                     memcpy((void *)((req->headers).content_type), (void *)(s + s_i_1 + 1), s_i - s_i_1 - 1);
                     (req->headers).content_type[s_i - s_i_1 - 1] = '\0';
+                    z_str_trim((void *)((req->headers).content_type), (uint64_t)(s_i - s_i_1 - 1));
                 }
 
                 req->parsed_bytes_count = req->parsed_bytes_count + s_i + 2;
