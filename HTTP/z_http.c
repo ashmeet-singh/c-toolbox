@@ -87,12 +87,12 @@ uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_
         }
         req->is_request_line_finished = 1;
         req->parsed_bytes_count = req->parsed_bytes_count + s_i + 2;
+        s = s + s_i + 2;
+        len = len - s_i - 2;
     }
 
     if(req->are_request_headers_finished == 0)
     {
-        s = s + req->parsed_bytes_count;
-        len = len - req->parsed_bytes_count;
         for (u_i = 0; u_i < (sizeof(known_headers_index) / sizeof(known_headers_index[0])); u_i++)
         {
             s_i = z_str_find_CRLF((void *)s, len);
@@ -101,6 +101,8 @@ uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_
             {
                 req->are_request_headers_finished = 1;
                 req->parsed_bytes_count = req->parsed_bytes_count + 2;
+                s = s + 2;
+                len = len - 2;
                 break;
             }
             u_i_1 = known_headers_length[u_i];
