@@ -10,7 +10,7 @@ static uint8_t known_headers[15] = { 'C', 'o', 'n', 't', 'e', 'n', 't', '-', 'L'
 static uint_fast32_t known_headers_index[1] = { 0 };
 static uint_fast32_t known_headers_length[1] = { 14 };
 
-uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_t len)
+uint_fast8_t z_http_parse_request_line_and_request_headers(struct z_http_context *ctx, void *buf, uint64_t len)
 {
     if (len == 0) { return 1; }
 

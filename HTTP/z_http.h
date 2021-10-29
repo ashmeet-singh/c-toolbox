@@ -28,6 +28,6 @@ struct z_http_context
     uint8_t tempbuf[10000];
 };
 
-uint_fast8_t z_http_parse_request(struct z_http_context *ctx, void *buf, uint64_t len);
+uint_fast8_t z_http_parse_request_line_and_request_headers(struct z_http_context *ctx, void *buf, uint64_t len)
 
 #endif /* _Z_HTTP_H_INCLUDED_ */
